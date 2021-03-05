@@ -1,18 +1,17 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
 
 export default function Home() {
     return (
-        <div className={styles.container}>
+        <div>
             <Head>
                 <title>carbon</title>
             </Head>
 
-            <main className={styles.main}>
+            <main className="flex justify-center">
                 <h1>carbon</h1>
             </main>
 
-            <footer className={styles.footer}>
+            <footer>
 
             </footer>
         </div>
