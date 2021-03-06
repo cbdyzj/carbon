@@ -1,4 +1,3 @@
-
-export default (req, res) => {
-  res.status(200).json({ name: 'hi' })
+export default function (req, res) {
+    res.status(200).send({ name: 'carbon' })
 }
