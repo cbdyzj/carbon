@@ -152,6 +152,7 @@
 
 .markdown-body a {
   background-color: transparent;
+  text-decoration-skip: objects;
 }
 
 .markdown-body a:active,

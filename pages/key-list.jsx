@@ -1,14 +1,14 @@
 import Head from 'next/head'
 
-export default function Home() {
+export default function KeyList() {
     return (
         <div>
             <Head>
-                <title>carbon</title>
+                <title>Key List | carbon</title>
             </Head>
 
-            <main className="flex justify-center">
-                <h1>carbon</h1>
+            <main>
+                <h1>key list</h1>
             </main>
 
             <footer>

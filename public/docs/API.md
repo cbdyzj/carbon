@@ -45,6 +45,10 @@
 }
 ```
 
+#### Response
+
+- HTTP 200 OK
+
 ---
 
 ## Get key translation
@@ -55,8 +59,8 @@
 
 ##### Query
 
-- appId: `'carbon'`
-- key: `'key.home.greeting'`
+- appId: `carbon`
+- key: `key.home.greeting`
 - locale: `en-US`
 
 #### Response
