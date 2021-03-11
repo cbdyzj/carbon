@@ -9,11 +9,7 @@ export default function Home() {
             </Head>
 
             <main>
-                <h1>App List </h1>
-                <section>
-                    <div>carbon</div>
-                    <div>natrium</div>
-                </section>
+
             </main>
 
             <footer>
