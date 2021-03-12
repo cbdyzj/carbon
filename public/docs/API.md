@@ -1,10 +1,10 @@
-# carbon API
+## carbon API
 
-## Add key
+### Add key
 
-### POST `/api/key`
+#### POST `/api/key`
 
-#### Request
+##### Request
 
 ```json
 {
@@ -20,17 +20,17 @@
 }
 ```
 
-#### Response
+##### Response
 
 - HTTP 200 OK
 
 ---
 
-## Update key / Translate key
+### Update key / Translate key
 
-### PUT `/api/key`
+#### PUT `/api/key`
 
-#### Request
+##### Request
 
 ```json
 {
@@ -45,25 +45,25 @@
 }
 ```
 
-#### Response
+##### Response
 
 - HTTP 200 OK
 
 ---
 
-## Get key translation
+### Get key translation
 
-### GET `/api/key`
+#### GET `/api/key`
 
-#### Request
+##### Request
 
-##### Query
+###### Query
 
 - appId: `carbon`
 - key: `key.home.greeting`
 - locale: `en-US`
 
-#### Response
+##### Response
 
 ```json
 {

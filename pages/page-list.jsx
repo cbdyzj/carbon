@@ -1,4 +1,6 @@
 import Head from 'next/head'
+import Markdown from '../components/Markdown'
+import LocaleSelect from '../components/LocaleSelect'
 
 export default function PageList() {
     return (
@@ -7,13 +9,12 @@ export default function PageList() {
                 <title>Page List | carbon</title>
             </Head>
 
-            <main>
-                <h1>page list</h1>
-            </main>
-
-            <footer>
-
-            </footer>
+            <Markdown page>
+                <h2>页面列表</h2>
+                {/* locale */}
+                <hr />
+                <LocaleSelect />
+            </Markdown>
         </div>
     )
 }

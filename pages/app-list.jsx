@@ -1,23 +1,49 @@
 import Head from 'next/head'
 import Markdown from '../components/Markdown'
+import LocaleSelect from '../components/LocaleSelect'
+import CarbonHead from '../components/CarbonHead'
 
 export default function AppList() {
+    // noinspection HtmlUnknownTarget
     return (
         <div>
             <Head>
                 <title>APP List | carbon</title>
             </Head>
-
-            <main>
-                <h1>APP list</h1>
-                <Markdown>
-                    <div>hello</div>
-                </Markdown>
-            </main>
-
-            <footer>
-
-            </footer>
+            <Markdown page>
+                <CarbonHead/>
+                <h2 id="应用列表">应用列表</h2>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>APP名称</th>
+                        <th>APP ID</th>
+                        <th>页面</th>
+                        <th>Key</th>
+                        <th>说明</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><a href="https://organism.vercel.app/">carbon</a></td>
+                        <td>carbon</td>
+                        <td><a href="/page-list?appId=carbon">共2个页面</a></td>
+                        <td><a href="/key-list?appId=carbon">共3个Key</a></td>
+                        <td>国际化资源小工具</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://natrium.herokuapp.com/">natrium</a></td>
+                        <td>natrium</td>
+                        <td><a href="/page-list?appId=natrium">共0个页面</a></td>
+                        <td><a href="/key-list?appId=natrium">共0个Key</a></td>
+                        <td>电报机器人：nano</td>
+                    </tr>
+                    </tbody>
+                </table>
+                {/* locale */}
+                <hr />
+                <LocaleSelect />
+            </Markdown>
         </div>
     )
 }

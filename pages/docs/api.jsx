@@ -1,5 +1,8 @@
 import Head from 'next/head'
 import Markdown from '../../components/Markdown'
+import marked from 'marked'
+import LocaleSelect from '../../components/LocaleSelect'
+import CarbonHead from '../../components/CarbonHead'
 
 export default function Api(props) {
     return (
@@ -7,8 +10,12 @@ export default function Api(props) {
             <Head>
                 <title>API Reference | carbon</title>
             </Head>
-
-            <Markdown page>{props.text}</Markdown>
+            <Markdown page>
+                <CarbonHead />
+                <div dangerouslySetInnerHTML={{ __html: marked(props.text) }} />
+                <hr />
+                <LocaleSelect />
+            </Markdown>
         </div>
     )
 }
