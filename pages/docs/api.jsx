@@ -29,7 +29,7 @@ export async function getServerSideProps(ctx) {
 
     return {
         props: {
-            text: await fetchText('https://organism.vercel.app/docs/API.md')
+            text: await fetchText('https://charcoal.vercel.app/docs/API.md')
         }
     }
 }

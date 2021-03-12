@@ -3,12 +3,12 @@ import Markdown from '../components/Markdown'
 import LocaleSelect from '../components/LocaleSelect'
 import CarbonHead from '../components/CarbonHead'
 
-export default function AppList() {
+export default function Apps() {
     // noinspection HtmlUnknownTarget
     return (
         <div>
             <Head>
-                <title>APP List | carbon</title>
+                <title>Apps - carbon</title>
             </Head>
             <Markdown page>
                 <CarbonHead/>
@@ -25,17 +25,17 @@ export default function AppList() {
                     </thead>
                     <tbody>
                     <tr>
-                        <td><a href="https://organism.vercel.app/">carbon</a></td>
+                        <td><a href="https://charcoal.vercel.app/">carbon</a></td>
                         <td>carbon</td>
-                        <td><a href="/page-list?appId=carbon">共2个页面</a></td>
-                        <td><a href="/key-list?appId=carbon">共3个Key</a></td>
+                        <td><a href="/pages?appId=carbon">共5个页面</a></td>
+                        <td><a href="/keys?appId=carbon">共15个Key</a></td>
                         <td>国际化资源小工具</td>
                     </tr>
                     <tr>
                         <td><a href="https://natrium.herokuapp.com/">natrium</a></td>
                         <td>natrium</td>
-                        <td><a href="/page-list?appId=natrium">共0个页面</a></td>
-                        <td><a href="/key-list?appId=natrium">共0个Key</a></td>
+                        <td><a href="/pages?appId=natrium">共0个页面</a></td>
+                        <td><a href="/keys?appId=natrium">共0个Key</a></td>
                         <td>电报机器人：nano</td>
                     </tr>
                     </tbody>
