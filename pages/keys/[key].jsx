@@ -3,6 +3,7 @@ import Markdown from '../../components/Markdown'
 import LocaleSelect from '../../components/LocaleSelect'
 import CarbonHead from '../../components/CarbonHead'
 import { useState } from 'react'
+import { assert } from '../../utils/assert'
 
 export default function Key(props) {
 
@@ -13,23 +14,32 @@ export default function Key(props) {
         setEditable(!editable)
     }
 
+    const { carbonKey } = props
+    assert(carbonKey,'carbonKey must be not null')
+
     return (
         <div>
             <Head>
-                <title>{props.theKey} - Keys - carbon</title>
+                <title>{carbonKey.key} - Keys - carbon</title>
             </Head>
             <Markdown page>
                 <CarbonHead />
 
-                <h2 id="key">{props.theKey}</h2>
+                <h2 id="key">{carbonKey.key}</h2>
                 <ul>
-                    <li>Key类型：文本</li>
+                    <li>类型：文本</li>
                 </ul>
                 <h3 id="原文">原文</h3>
+
+                <select defaultValue="ja-JP">
+                    <option value="zh-CN">zh-CN</option>
+                    <option value="zh-HK">zh-HK</option>
+                    <option value="ja-JP">ja-JP</option>
+                </select>
+
                 <table>
                     <thead>
                     <tr>
-                        <th>Locale</th>
                         <th>原文</th>
                         <th>说明</th>
                         <th>操作</th>
@@ -37,18 +47,24 @@ export default function Key(props) {
                     </thead>
                     <tbody>
                     <tr>
-                        <td>zh-CN</td>
-                        <td>你好</td>
-                        <td>普通语气</td>
-                        <td><a href="#">编辑</a></td>
+                        <td className={editable ? 'bg-blue-50' : ''} contentEditable={editable}>こんにちは</td>
+                        <td className={editable ? 'bg-blue-50' : ''} contentEditable={editable}>こんにちは</td>
+                        <td><a href="#" onClick={handleOperate}>{editable ? '确认' : '编辑'}</a></td>
                     </tr>
                     </tbody>
                 </table>
+
                 <h3 id="译文">译文</h3>
+
+                <select defaultValue="ja-JP">
+                    <option value="zh-CN">zh-CN</option>
+                    <option value="zh-HK">zh-HK</option>
+                    <option value="ja-JP">ja-JP</option>
+                </select>
+
                 <table>
                     <thead>
                     <tr>
-                        <th>Locale</th>
                         <th>译文</th>
                         <th>说明</th>
                         <th>操作</th>
@@ -56,21 +72,8 @@ export default function Key(props) {
                     </thead>
                     <tbody>
                     <tr>
-                        <td>zh-CN</td>
-                        <td>你好</td>
-                        <td>你好</td>
-                        <td><a href="#">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>en-US</td>
-                        <td>Hello</td>
-                        <td>Hello</td>
-                        <td><a href="#">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>ja-JP</td>
-                        <td contentEditable={editable}>こんにちは</td>
-                        <td contentEditable={editable}>こんにちは</td>
+                        <td className={editable ? 'bg-blue-50' : ''} contentEditable={editable}>こんにちは</td>
+                        <td className={editable ? 'bg-blue-50' : ''} contentEditable={editable}>こんにちは</td>
                         <td><a href="#" onClick={handleOperate}>{editable ? '确认' : '编辑'}</a></td>
                     </tr>
                     </tbody>
@@ -88,7 +91,9 @@ export default function Key(props) {
 export async function getServerSideProps(ctx) {
     return {
         props: {
-            theKey: ctx.params?.key,
+            carbonKey: {
+                key: ctx.params?.key
+            }
         }
     }
 }
