@@ -3,6 +3,7 @@ import Markdown from '../components/Markdown'
 import LocaleSelect from '../components/LocaleSelect'
 import CarbonHead from '../components/CarbonHead'
 
+
 export default function Apps() {
     // noinspection HtmlUnknownTarget
     return (
@@ -25,7 +26,7 @@ export default function Apps() {
                     </thead>
                     <tbody>
                     <tr>
-                        <td><a href="https://charcoal.vercel.app/">carbon</a></td>
+                        <td><a href="https://carbonium.vercel.app/">carbon</a></td>
                         <td>carbon</td>
                         <td><a href="/pages?appId=carbon">共5个页面</a></td>
                         <td><a href="/keys?appId=carbon">共15个Key</a></td>

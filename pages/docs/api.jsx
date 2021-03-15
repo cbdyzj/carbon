@@ -20,16 +20,12 @@ export default function Api(props) {
     )
 }
 
-async function fetchText(input) {
-    const response = await fetch(input)
-    return await response.text()
-}
-
 export async function getServerSideProps(ctx) {
-
+    const response = await fetch('https://carbonium.vercel.app/docs/API.md')
+    const text = await response.text()
     return {
         props: {
-            text: await fetchText('https://charcoal.vercel.app/docs/API.md')
+            text,
         }
     }
 }

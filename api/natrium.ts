@@ -1,7 +1,7 @@
 // natrium carbon service
 // https://natrium.herokuapp.com/
 import { assert } from "@/utils/assert"
-import { NANO_API_TOKEN } from '@/secrets'
+import { NANO_API_TOKEN } from '@/env'
 import { CarbonApp, Locale, CarbonText } from "@/model/CarbonApp";
 
 const CARBON_APP_API = 'https://natrium.herokuapp.com/api/carbon/app'
