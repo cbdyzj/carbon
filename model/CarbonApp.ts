@@ -1,6 +1,6 @@
 export type Locale = string
 
-export interface LocaleText {
+export interface CarbonText {
     locale: Locale
     text: string
 }
@@ -8,21 +8,21 @@ export interface LocaleText {
 export interface CarbonKey {
     key: string
     pageCode: string
-    original: LocaleText[]
-    translation?: LocaleText[]
+    original: CarbonText[]
+    translation?: CarbonText[]
 }
 
 export interface CarbonPage {
-    pageName: string
-    pageCode: string
-    pageDescription?: string
-    keyList: CarbonKey[]
+    name: string
+    code: string
+    description?: string
+    keyList?: CarbonKey[]
 }
 
 export interface CarbonApp {
-    appName: string
-    appId: string
+    id: string
+    name: string
     fallbackLocale: Locale
     localeList: Locale[]
-    pageList: CarbonPage[]
+    pageList?: CarbonPage[]
 }
