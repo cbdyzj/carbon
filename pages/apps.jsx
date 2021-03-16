@@ -29,7 +29,7 @@ export default function Apps(props) {
                     {appList.map(it => {
                         return (
                             <tr>
-                                <td>{it.name}</td>
+                                <td>{it.url ? <a href={it.url}>{it.name}</a> : it.name}</td>
                                 <td>{it.id}</td>
                                 <td><a href={`/pages?appId=${it.id}`}>共{it.pageCount}个页面</a></td>
                                 <td><a href={`/keys?appId=${it.id}`}>共{it.keyCount}个Key</a></td>
