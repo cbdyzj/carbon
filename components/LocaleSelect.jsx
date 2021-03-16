@@ -10,13 +10,13 @@ export default function LocaleSelect(props) {
 
     // noinspection HtmlUnknownTarget
     return (
-        <span className="flex">
-           <img className="w-6" src="/language.svg" alt="language" />
-           <select className="ml-0.5" value={locale} onChange={handleSelectLocale}>
+        <div>
+           <img className="inline-block w-6" src="/language.svg" alt="language" />
+           <select className="inline-block ml-0.5" value={locale} onChange={handleSelectLocale}>
                <option value="zh-CN">简体中文</option>
                <option value="zh-HK">繁体中文（香港）</option>
                <option value="en-US">English (United States)</option>
            </select>
-       </span>
+       </div>
     )
 }

@@ -15,7 +15,7 @@ export default function Key(props) {
     }
 
     const { carbonKey } = props
-    assert(carbonKey,'carbonKey must be not null')
+    assert(carbonKey, 'carbonKey must be not null')
 
     return (
         <div>
@@ -31,11 +31,13 @@ export default function Key(props) {
                 </ul>
                 <h3 id="原文">原文</h3>
 
-                <select defaultValue="ja-JP">
-                    <option value="zh-CN">zh-CN</option>
-                    <option value="zh-HK">zh-HK</option>
-                    <option value="ja-JP">ja-JP</option>
-                </select>
+                <div className="mb-0.5">
+                    <select defaultValue="ja-JP">
+                        <option value="zh-CN">zh-CN</option>
+                        <option value="zh-HK">zh-HK</option>
+                        <option value="ja-JP">ja-JP</option>
+                    </select>
+                </div>
 
                 <table>
                     <thead>
@@ -56,11 +58,13 @@ export default function Key(props) {
 
                 <h3 id="译文">译文</h3>
 
-                <select defaultValue="ja-JP">
-                    <option value="zh-CN">zh-CN</option>
-                    <option value="zh-HK">zh-HK</option>
-                    <option value="ja-JP">ja-JP</option>
-                </select>
+                <div className="mb-0.5">
+                    <select defaultValue="ja-JP">
+                        <option value="zh-CN">zh-CN</option>
+                        <option value="zh-HK">zh-HK</option>
+                        <option value="ja-JP">ja-JP</option>
+                    </select>
+                </div>
 
                 <table>
                     <thead>
