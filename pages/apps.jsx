@@ -28,7 +28,7 @@ export default function Apps(props) {
                     <tbody>
                     {appList.map(it => {
                         return (
-                            <tr>
+                            <tr key={it.id}>
                                 <td>{it.url ? <a href={it.url}>{it.name}</a> : it.name}</td>
                                 <td>{it.id}</td>
                                 <td><a href={`/pages?appId=${it.id}`}>共{it.pageCount}个页面</a></td>
@@ -48,6 +48,8 @@ export default function Apps(props) {
 }
 
 export async function getServerSideProps(ctx) {
+    const { req, res } = ctx
+
     const appList = await getAppList()
     return {
         props: {
