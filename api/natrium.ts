@@ -2,9 +2,10 @@
 // https://natrium.herokuapp.com/
 import { assert } from "@/utils/assert"
 import { NANO_API_TOKEN } from '@/env'
-import { CarbonApp, Locale, CarbonText } from "@/model/CarbonApp";
+import { CarbonApp, Locale, CarbonText, CarbonAppOverview } from "@/model/CarbonApp";
 
 const CARBON_APP_API = 'https://natrium.herokuapp.com/api/carbon/app'
+const CARBON_APP_LIST_API = 'https://natrium.herokuapp.com/api/carbon/app/list'
 const CARBON_TEXT_API = 'https://natrium.herokuapp.com/api/carbon/text'
 
 export async function createApp(app: CarbonApp) {
@@ -36,6 +37,13 @@ export async function updateApp(app: CarbonApp) {
 
 export async function getApp(appId: string): Promise<CarbonApp> {
     const response = await fetch(`${CARBON_APP_API}?appId=${appId}`)
+    const result = await response.json()
+    assert(!result.error, result.error)
+    return result.payload
+}
+
+export async function getAppList(): Promise<CarbonAppOverview[]> {
+    const response = await fetch(CARBON_APP_LIST_API)
     const result = await response.json()
     assert(!result.error, result.error)
     return result.payload

@@ -2,17 +2,18 @@ import Head from 'next/head'
 import Markdown from '../components/Markdown'
 import LocaleSelect from '../components/LocaleSelect'
 import CarbonHead from '../components/CarbonHead'
+import { getAppList } from '../api/natrium'
 
-
-export default function Apps() {
+export default function Apps(props) {
     // noinspection HtmlUnknownTarget
+    const { appList = [] } = props
     return (
         <div>
             <Head>
                 <title>Apps - carbon</title>
             </Head>
             <Markdown page>
-                <CarbonHead/>
+                <CarbonHead />
                 <h2 id="应用列表">应用列表</h2>
                 <table>
                     <thead>
@@ -25,20 +26,17 @@ export default function Apps() {
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td><a href="https://carbonium.vercel.app/">carbon</a></td>
-                        <td>carbon</td>
-                        <td><a href="/pages?appId=carbon">共5个页面</a></td>
-                        <td><a href="/keys?appId=carbon">共15个Key</a></td>
-                        <td>国际化资源小工具</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://natrium.herokuapp.com/">natrium</a></td>
-                        <td>natrium</td>
-                        <td><a href="/pages?appId=natrium">共0个页面</a></td>
-                        <td><a href="/keys?appId=natrium">共0个Key</a></td>
-                        <td>电报机器人：nano</td>
-                    </tr>
+                    {appList.map(it => {
+                        return (
+                            <tr>
+                                <td>{it.name}</td>
+                                <td>{it.id}</td>
+                                <td><a href={`/pages?appId=${it.id}`}>共{it.pageCount}个页面</a></td>
+                                <td><a href={`/keys?appId=${it.id}`}>共{it.keyCount}个Key</a></td>
+                                <td>{it.description ?? ''}</td>
+                            </tr>
+                        )
+                    })}
                     </tbody>
                 </table>
                 {/* locale */}
@@ -47,4 +45,13 @@ export default function Apps() {
             </Markdown>
         </div>
     )
+}
+
+export async function getServerSideProps(ctx) {
+    const appList = await getAppList()
+    return {
+        props: {
+            appList,
+        }
+    }
 }

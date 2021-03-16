@@ -24,5 +24,15 @@ export interface CarbonApp {
     name: string
     fallbackLocale: Locale
     localeList: Locale[]
+    description?: string
     pageList?: CarbonPage[]
+}
+
+export interface CarbonAppOverview {
+    id: string
+    name: string
+    pageCount: number
+    keyCount: number
+    description?: string
+
 }
