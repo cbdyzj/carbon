@@ -5,19 +5,40 @@ import CarbonHead from '../components/CarbonHead'
 import { assert } from '../utils/assert'
 import { withErrorHandling } from '../utils/error'
 import { getApp } from '../api/natrium'
+import Button from '../components/Button'
+import { useState } from 'react'
 
 function OriginalBlock(props) {
 
     const localeTextList = props.original
 
+    const [editing, setEditing] = useState(false)
+
+    const [selectedLocale, setSelectedLocale] = useState(localeTextList[0].locale)
+
+    const selectedLocaleText = localeTextList.find(it => it.locale === selectedLocale)
+
+    const [inputValue, setInputValue] = useState(selectedLocaleText.text)
+
     function handleClickEdit(ev) {
-        ev.preventDefault()
+        setEditing(!editing)
+    }
+
+    function handleInputChange(ev) {
+        setInputValue(ev.target.value)
+    }
+
+    function handleSelectChange(ev) {
+        const newSelectedLocale = ev.target.value
+        setSelectedLocale(newSelectedLocale)
+        setInputValue(localeTextList.find(it => it.locale === newSelectedLocale).text)
+        setEditing(false)
     }
 
     return (
         <>
             <div className="mb-1">
-                <select defaultValue={localeTextList[0].locale}>
+                <select className="w-20" value={selectedLocale} onChange={handleSelectChange}>
                     {localeTextList.map(it => {
                         return (
                             <option key={it.locale} value={it.locale}>
@@ -27,10 +48,11 @@ function OriginalBlock(props) {
                     })}
                 </select>
                 <span className="mx-1">|</span>
-                <a href="#" onClick={handleClickEdit}>{'编辑'}</a>
+                <Button onClick={handleClickEdit}>{editing ? '保存' : '编辑'}</Button>
             </div>
 
-            <input type="text" value={localeTextList[0]?.text} readOnly />
+            <input type="text" className={`border-b outline-none ${editing ? 'bg-blue-50' : ''}`}
+                   value={inputValue} onChange={handleInputChange} readOnly={!editing} />
         </>
     )
 }
@@ -40,14 +62,33 @@ function TranslationBlock(props) {
     const localeList = props.localeList
     const localeTextList = props.translation
 
+    const [editing, setEditing] = useState(false)
+
+    const [selectedLocale, setSelectedLocale] = useState(localeList[0])
+
+    const selectedLocaleText = localeTextList.find(it => it.locale === selectedLocale)
+
+    const [inputValue, setInputValue] = useState(selectedLocaleText?.text ?? '')
+
     function handleClickEdit(ev) {
-        ev.preventDefault()
+        setEditing(!editing)
+    }
+
+    function handleInputChange(ev) {
+        setInputValue(ev.target.value)
+    }
+
+    function handleSelectChange(ev) {
+        const newSelectedLocale = ev.target.value
+        setSelectedLocale(newSelectedLocale)
+        setInputValue(localeTextList.find(it => it.locale === newSelectedLocale)?.text ?? '')
+        setEditing(false)
     }
 
     return (
         <>
             <div className="mb-1">
-                <select defaultValue={localeList[0]}>
+                <select className="w-20" value={selectedLocale} onChange={handleSelectChange}>
                     {localeList.map(it => {
                         return (
                             <option key={it} value={it}>
@@ -57,10 +98,17 @@ function TranslationBlock(props) {
                     })}
                 </select>
                 <span className="mx-1">|</span>
-                <a href="#" onClick={handleClickEdit}>{'编辑'}</a>
+                <Button onClick={handleClickEdit}>{editing ? '保存' : '编辑'}</Button>
+                {!selectedLocaleText && (
+                    <>
+                        <span className="mx-1">|</span>
+                        <span>未翻译</span>
+                    </>
+                )}
             </div>
 
-            <input type="text" value={localeTextList[0]?.text} readOnly />
+            <input type="text" className={`border-b outline-none ${editing ? 'bg-blue-50' : ''}`}
+                   value={inputValue} onChange={handleInputChange} readOnly={!editing} />
         </>
     )
 }
@@ -69,6 +117,8 @@ export default function Key(props) {
 
     const { carbonKey } = props
     assert(carbonKey, 'carbon key must be not null')
+    assert(carbonKey.original, 'key original must be not null')
+    assert(carbonKey.original.length > 0, 'key original locale text must not be empty')
 
     return (
         <div>
@@ -80,14 +130,14 @@ export default function Key(props) {
                 <h2 id="key">{carbonKey.key}</h2>
                 <ul>
                     <li>页面：{carbonKey.pageName}</li>
-                    <li>说明：{carbonKey.description || ''}</li>
+                    <li>说明：{carbonKey.description ?? ''}</li>
                 </ul>
 
                 <h3 id="原文">原文</h3>
-                <OriginalBlock original={carbonKey.original ?? []} />
+                <OriginalBlock original={carbonKey.original} />
 
                 <h3 id="译文">译文</h3>
-                <TranslationBlock localeList={props.localeList} translation={carbonKey.translation || []} />
+                <TranslationBlock localeList={props.localeList} translation={carbonKey.translation ?? []} />
 
                 {/* locale */}
                 <hr />

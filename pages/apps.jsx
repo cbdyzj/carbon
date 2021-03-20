@@ -3,12 +3,12 @@ import Markdown from '../components/Markdown'
 import LocaleSelect from '../components/LocaleSelect'
 import CarbonHead from '../components/CarbonHead'
 import { getAppList } from '../api/natrium'
+import Button from '../components/Button'
 
 export default function Apps(props) {
     const { appList = [] } = props
 
     function handleClickCreateApp(ev) {
-        ev.preventDefault()
     }
 
     return (
@@ -23,7 +23,7 @@ export default function Apps(props) {
                 <div className="mb-1">
                     <span>共{appList.length}个应用</span>
                     <span className="mx-1">|</span>
-                    <a href="#" onClick={handleClickCreateApp}>新建应用</a>
+                    <Button onClick={handleClickCreateApp}>新建应用</Button>
                 </div>
 
                 <table>
