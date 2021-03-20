@@ -10,6 +10,7 @@ export interface CarbonKey {
     pageCode: string
     original: CarbonText[]
     translation?: CarbonText[]
+    description?: string
 }
 
 export interface CarbonPage {

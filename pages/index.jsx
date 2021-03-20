@@ -5,7 +5,6 @@ import CarbonHead from '../components/CarbonHead'
 
 export default function Home() {
 
-    // noinspection HtmlUnknownTarget
     return (
         <div>
             <Head>
@@ -17,7 +16,7 @@ export default function Home() {
                 <blockquote>
                     <p>国际化资源小工具</p>
                 </blockquote>
-                <p><a href="/apps">进入应用列表</a></p>
+                <p><a href={'/apps'}>进入应用列表</a></p>
                 <h3 id="文档">文档</h3>
                 <table>
                     <thead>
@@ -28,7 +27,7 @@ export default function Home() {
                     </thead>
                     <tbody>
                     <tr>
-                        <td><a href="/docs/api">API文档</a></td>
+                        <td><a href={'/docs/api'}>API文档</a></td>
                         <td>HTTP API</td>
                     </tr>
                     <tr>

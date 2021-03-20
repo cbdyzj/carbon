@@ -5,8 +5,12 @@ import CarbonHead from '../components/CarbonHead'
 import { getAppList } from '../api/natrium'
 
 export default function Apps(props) {
-    // noinspection HtmlUnknownTarget
     const { appList = [] } = props
+
+    function handleClickCreateApp(ev) {
+        ev.preventDefault()
+    }
+
     return (
         <div>
             <Head>
@@ -15,11 +19,18 @@ export default function Apps(props) {
             <Markdown page>
                 <CarbonHead />
                 <h2 id="应用列表">应用列表</h2>
+
+                <div className="mb-1">
+                    <span>共{appList.length}个应用</span>
+                    <span className="mx-1">|</span>
+                    <a href="#" onClick={handleClickCreateApp}>新建应用</a>
+                </div>
+
                 <table>
                     <thead>
                     <tr>
-                        <th>APP名称</th>
-                        <th>APP ID</th>
+                        <th>应用名称</th>
+                        <th>应用ID</th>
                         <th>页面</th>
                         <th>Key</th>
                         <th>说明</th>
@@ -48,12 +59,10 @@ export default function Apps(props) {
 }
 
 export async function getServerSideProps(ctx) {
-    const { req, res } = ctx
 
-    const appList = await getAppList()
     return {
         props: {
-            appList,
+            appList: await getAppList(),
         }
     }
 }

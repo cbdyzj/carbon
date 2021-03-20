@@ -4,9 +4,12 @@ import { assert } from "@/utils/assert"
 import { NANO_API_TOKEN } from '@/env'
 import { CarbonApp, Locale, CarbonText, CarbonAppOverview } from "@/model/CarbonApp";
 
-const CARBON_APP_API = 'https://natrium.herokuapp.com/api/carbon/app'
-const CARBON_APP_LIST_API = 'https://natrium.herokuapp.com/api/carbon/app/list'
-const CARBON_TEXT_API = 'https://natrium.herokuapp.com/api/carbon/text'
+// const NATRIUM = 'http://localhost:8080'
+const NATRIUM = 'https://natrium.herokuapp.com'
+
+const CARBON_APP_API = NATRIUM + '/api/carbon/app'
+const CARBON_APP_LIST_API = NATRIUM + '/api/carbon/app/list'
+const CARBON_TEXT_API = NATRIUM + '/api/carbon/text'
 
 export async function createApp(app: CarbonApp) {
     const response = await fetch(CARBON_APP_API, {

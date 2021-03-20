@@ -2,9 +2,31 @@ import Head from 'next/head'
 import Markdown from '../components/Markdown'
 import LocaleSelect from '../components/LocaleSelect'
 import CarbonHead from '../components/CarbonHead'
+import { getApp } from '../api/natrium'
+import { withErrorHandling } from '../utils/error'
 
-export default function Pages() {
-    // noinspection HtmlUnknownTarget
+function getPageList(app = {}) {
+    if (!Array.isArray(app.pageList)) {
+        return []
+    }
+    return app.pageList.map(it => {
+        return {
+            code: it.code,
+            name: it.name,
+            description: it.description,
+            keyCount: it.keyList?.length ?? 0,
+        }
+    })
+}
+
+export default function Pages(props) {
+
+    function handleClickCreatePage(ev) {
+        ev.preventDefault()
+    }
+
+    const pageList = getPageList(props.app)
+
     return (
         <div>
             <Head>
@@ -13,50 +35,35 @@ export default function Pages() {
             <Markdown page>
                 <CarbonHead />
                 <h2 id="页面列表">页面列表</h2>
-                <p>共5个页面，共15个Key</p>
+
+                <div className="mb-1">
+                    <span>共5个页面，共15个Key</span>
+                    <span className="mx-1">|</span>
+                    <a href="#" onClick={handleClickCreatePage}>新建页面</a>
+                </div>
+
                 <table>
                     <thead>
-                    <tr>
-                        <th>页面</th>
-                        <th>页面编号</th>
-                        <th>Key</th>
-                        <th>说明</th>
-                    </tr>
+                        <tr>
+                            <th>页面</th>
+                            <th>页面编号</th>
+                            <th>Key</th>
+                            <th>说明</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>Index</td>
-                        <td>index</td>
-                        <td>共2个Key</td>
-                        <td>Index page</td>
-                    </tr>
-                    <tr>
-                        <td>APP List</td>
-                        <td>app_list</td>
-                        <td>共3个Key</td>
-                        <td>Application list</td>
-                    </tr>
-                    <tr>
-                        <td>Page List</td>
-                        <td>page_list</td>
-                        <td>共4个Key</td>
-                        <td>Page list of the application</td>
-                    </tr>
-                    <tr>
-                        <td>Key List</td>
-                        <td>key_list</td>
-                        <td>共5个Key</td>
-                        <td>Key list</td>
-                    </tr>
-                    <tr>
-                        <td>API doc</td>
-                        <td>api_doc</td>
-                        <td>共1个Key</td>
-                        <td>API doc</td>
-                    </tr>
+                        {pageList.map(it => {
+                            return (
+                                <tr key={it.code}>
+                                    <td>{it.name}</td>
+                                    <td>{it.code}</td>
+                                    <td>共{it.keyCount}个Key</td>
+                                    <td>{it.description}</td>
+                                </tr>
+                            )
+                        })}
                     </tbody>
                 </table>
-
 
                 {/* locale */}
                 <hr />
@@ -65,3 +72,23 @@ export default function Pages() {
         </div>
     )
 }
+
+export const getServerSideProps = withErrorHandling(async function (ctx) {
+    const { appId } = ctx.query
+
+    if (!appId) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            }
+        }
+    }
+
+    const app = await getApp(appId)
+    return {
+        props: {
+            app,
+        }
+    }
+})
