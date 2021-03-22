@@ -8,12 +8,18 @@ import { useState } from 'react'
 
 const TICKET = 'ticket'
 
+function getTicketCookie() {
+    return Cookies.get(TICKET) || ''
+}
+
 export default function Apps(props) {
 
-    const [ticket, setTicket] = useState(() => Cookies.get(TICKET) || '')
+    const [ticketCookie, setTicketCookie] = useState(getTicketCookie)
+    const [ticket, setTicket] = useState(getTicketCookie)
 
     function handleUpdateTicket() {
         Cookies.set(TICKET, ticket)
+        setTicketCookie(ticket)
     }
 
     function handleInputValueChange(ev) {
@@ -29,9 +35,10 @@ export default function Apps(props) {
                 <CarbonHead />
                 <h2 id="Ticket">Ticket</h2>
 
+                <div className="mb-1">
+                    <Button disabled={ticket === ticketCookie} onClick={handleUpdateTicket}>更新Ticket</Button>
+                </div>
                 <input className="border-b outline-none" type="text" value={ticket} onChange={handleInputValueChange} />
-                <br />
-                <Button onClick={handleUpdateTicket}>更新Ticket</Button>
 
                 {/* locale */}
                 <hr />
