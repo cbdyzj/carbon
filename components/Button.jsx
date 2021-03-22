@@ -1,16 +1,20 @@
 export default function Button(props) {
 
-    let className = 'text-blue-600'
+    const classNames = ['focus:outline-none']
 
     if (props.disabled) {
-        className = 'text-blue-400'
+        classNames.push('text-blue-400')
+    } else {
+        classNames.push('text-blue-600')
     }
+
     if (props.className) {
-        className = className + ' ' + props.className
+        classNames.push(props.className)
     }
+
     props = {
         ...props,
-        className,
+        className: classNames.join(' '),
     }
 
     return (

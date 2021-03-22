@@ -16,7 +16,10 @@ export default function Home() {
                 <blockquote>
                     <p>国际化资源小工具</p>
                 </blockquote>
-                <p><a href={'/apps'}>进入应用列表</a></p>
+                <ul>
+                    <li><a href={'/apps'}>进入应用列表</a></li>
+                    <li><a href={'/ticket'}>Ticket</a></li>
+                </ul>
                 <h3 id="文档">文档</h3>
                 <table>
                     <thead>
