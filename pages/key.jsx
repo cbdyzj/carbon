@@ -7,24 +7,53 @@ import { withErrorHandling } from '../utils/error'
 import { getApp } from '../api/natrium'
 import Button from '../components/Button'
 import { useState } from 'react'
+import { updateApp } from '../api/carbon'
 
 function OriginalBlock(props) {
 
     const [editing, setEditing] = useState(false)
+    const [saving, setSaving] = useState(false)
     const [inputValue, setInputValue] = useState(props.original)
 
-    function handleClickEdit(ev) {
-        setEditing(!editing)
+    async function handleClickEditingButton(ev) {
+        if (!editing) {
+            setEditing(true)
+        } else {
+            setSaving(true)
+            if (inputValue !== props.original) {
+                await props.updateOriginal(inputValue)
+            }
+            setSaving(false)
+            setEditing(false)
+        }
+    }
+
+    function handleClickCancelButton(ev) {
+        setInputValue(props.original)
+        setEditing(false)
     }
 
     function handleInputChange(ev) {
         setInputValue(ev.target.value)
     }
 
+    function getEditingButtonText() {
+        if (saving) {
+            return '保存中...'
+        }
+        return editing ? '保存' : '编辑'
+    }
+
     return (
         <>
             <div className="mb-1">
-                <Button onClick={handleClickEdit}>{editing ? '保存' : '编辑'}</Button>
+                {(editing && !saving) && (
+                    <>
+                        <Button onClick={handleClickCancelButton}>取消</Button>
+                        <span className="mx-1">|</span>
+                    </>
+                )}
+                <Button onClick={handleClickEditingButton} disabled={saving}>{getEditingButtonText()}</Button>
             </div>
 
             <input type="text" className={`border-b outline-none ${editing ? 'bg-blue-50' : ''}`}
@@ -89,11 +118,52 @@ function TranslationBlock(props) {
     )
 }
 
+function getCarbonKey(app, key) {
+    function getPageName(code) {
+        return app.pageList.find(it => it.code === code)?.name ?? ''
+    }
+
+    const originalKey = app.pageList
+        .map(it => it.keyList)
+        .filter(it => Array.isArray(it))
+        .flatMap(it => it)
+        .find(it => it.key === key)
+
+    assert(typeof originalKey === 'object', 'key not found')
+    assert(originalKey.original, 'key original must be not null')
+
+    return {
+        ...originalKey,
+        pageName: getPageName(originalKey.pageCode),
+    }
+}
+
 export default function Key(props) {
 
-    const { carbonKey } = props
-    assert(carbonKey, 'carbon key must be not null')
-    assert(carbonKey.original, 'key original must be not null')
+    const [app, setApp] = useState(props.app)
+    const [carbonKey, setCarbonKey] = useState(props.carbonKey)
+
+    function getOriginalKey() {
+        return app.pageList
+            .map(it => it.keyList)
+            .filter(it => Array.isArray(it))
+            .flatMap(it => it)
+            .find(it => it.key === carbonKey.key)
+    }
+
+    async function updateOriginal(newOriginal) {
+        const key = carbonKey.key
+        const originalKey = getOriginalKey()
+        originalKey.original = newOriginal
+        const newApp = { ...app }
+        const result = await updateApp(newApp)
+        if (result && result.error) {
+            alert(result.error)
+            return
+        }
+        setApp(newApp)
+        setCarbonKey(getCarbonKey(newApp, key))
+    }
 
     return (
         <div>
@@ -109,10 +179,10 @@ export default function Key(props) {
                 </ul>
 
                 <h3 id="原文">原文</h3>
-                <OriginalBlock original={carbonKey.original} />
+                <OriginalBlock original={carbonKey.original} updateOriginal={updateOriginal} />
 
                 <h3 id="译文">译文</h3>
-                <TranslationBlock localeList={props.localeList} translation={carbonKey.translation ?? []} />
+                <TranslationBlock localeList={app.localeList} translation={carbonKey.translation ?? []} />
 
                 {/* locale */}
                 <hr />
@@ -123,10 +193,11 @@ export default function Key(props) {
     )
 }
 
+
 export const getServerSideProps = withErrorHandling(async function (ctx) {
     const { appId, key } = ctx.query
 
-    if (!appId || !key) {
+    if (!appId) {
         return {
             redirect: {
                 destination: '/',
@@ -139,27 +210,12 @@ export const getServerSideProps = withErrorHandling(async function (ctx) {
     assert(app, 'carbon app must be not null')
     assert(Array.isArray(app.pageList), 'pages must be not empty')
 
-    function getPageName(code) {
-        return app.pageList.find(it => it.code === code)?.name ?? ''
-    }
-
-    const originalKey = app.pageList
-        .map(it => it.keyList)
-        .filter(it => Array.isArray(it))
-        .flatMap(it => it)
-        .find(it => it.key === key)
-
-    assert(typeof originalKey === 'object', 'key not found')
-
-    const carbonKey = {
-        ...originalKey,
-        pageName: getPageName(originalKey.pageCode),
-    }
+    const carbonKey = getCarbonKey(app, key)
 
     return {
         props: {
+            app,
             carbonKey,
-            localeList: app.localeList,
         }
     }
 })

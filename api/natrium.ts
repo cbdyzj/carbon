@@ -4,8 +4,7 @@ import { assert } from "@/utils/assert"
 import { NANO_API_TOKEN } from '@/env'
 import { CarbonApp, Locale, CarbonText, CarbonAppOverview } from "@/model/CarbonApp";
 
-// const NATRIUM = 'http://localhost:8080'
-const NATRIUM = 'https://natrium.herokuapp.com'
+const NATRIUM = process.env.NODE_ENV === 'production' ? 'https://natrium.herokuapp.com' : 'http://localhost:8080'
 
 const CARBON_APP_API = NATRIUM + '/api/carbon/app'
 const CARBON_APP_LIST_API = NATRIUM + '/api/carbon/app/list'
@@ -22,6 +21,7 @@ export async function createApp(app: CarbonApp) {
     })
     const result = await response.json()
     assert(!result.error, result.error)
+    return result.payload ?? {}
 }
 
 export async function updateApp(app: CarbonApp) {
@@ -35,6 +35,7 @@ export async function updateApp(app: CarbonApp) {
     })
     const result = await response.json()
     assert(!result.error, result.error)
+    return result.payload ?? {}
 }
 
 
@@ -42,14 +43,14 @@ export async function getApp(appId: string): Promise<CarbonApp> {
     const response = await fetch(`${CARBON_APP_API}?appId=${appId}`)
     const result = await response.json()
     assert(!result.error, result.error)
-    return result.payload
+    return result.payload ?? {}
 }
 
 export async function getAppList(): Promise<CarbonAppOverview[]> {
     const response = await fetch(CARBON_APP_LIST_API)
     const result = await response.json()
     assert(!result.error, result.error)
-    return result.payload
+    return result.payload ?? {}
 }
 
 export async function getText(appId: string, key: string, locale: Locale): Promise<CarbonText> {
@@ -61,5 +62,5 @@ export async function getText(appId: string, key: string, locale: Locale): Promi
     const response = await fetch(`${CARBON_TEXT_API}?${q.toString()}`)
     const result = await response.json()
     assert(!result.error, result.error)
-    return result.payload
+    return result.payload ?? {}
 }
