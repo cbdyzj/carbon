@@ -8,30 +8,6 @@ import { useState } from 'react'
 import Modal from '../components/Modal'
 import Button from '../components/Button'
 
-function getKeyList(app) {
-    if (!Array.isArray(app.pageList)) {
-        return []
-    }
-
-    function getPageName(code) {
-        return app.pageList.find(it => it.code === code)?.name ?? ''
-    }
-
-    return app.pageList
-        .map(it => it.keyList)
-        .filter(it => Array.isArray(it))
-        .flatMap(it => it)
-        .map(it => {
-            return {
-                key: it.key,
-                pageCode: it.pageCode,
-                pageName: getPageName(it.pageCode),
-                url: `/key?appId=${app.id}&key=${it.key}`,
-                description: it.description ?? ''
-            }
-        })
-}
-
 export default function Keys(props) {
 
     const [modalVisible, setModalVisible] = useState(false)
@@ -39,14 +15,6 @@ export default function Keys(props) {
     function handleClickCreateKey(ev) {
         setModalVisible(true)
     }
-
-    const keyList = getKeyList(props.app)
-    const pageList = (props.app.pageList ?? []).map(it => {
-        return {
-            code: it.code,
-            name: it.name,
-        }
-    })
 
     return (
         <div>
@@ -58,7 +26,7 @@ export default function Keys(props) {
                 <h2 id="key列表">Key列表</h2>
 
                 <div className="mb-1">
-                    <span>共{keyList.length}个Key</span>
+                    <span>共{props.keyList.length}个Key</span>
                     <span className="mx-1">|</span>
                     <Button onClick={handleClickCreateKey}>新增Key</Button>
                 </div>
@@ -68,15 +36,17 @@ export default function Keys(props) {
                     <tr>
                         <th>Key</th>
                         <th>页面</th>
+                        <th>原文</th>
                         <th>说明</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {keyList.map(it => {
+                    {props.keyList.map(it => {
                         return (
                             <tr key={it.key}>
                                 <td><a href={it.url}>{it.key}</a></td>
                                 <td>{it.pageName}</td>
+                                <td>{it.original}</td>
                                 <td>{it.description}</td>
                             </tr>
                         )
@@ -98,12 +68,16 @@ export default function Keys(props) {
                     <div className="mt-2">
                         <span className="inline-block w-1/5">页面: </span>
                         <select className="inline-block w-4/5">
-                            {pageList.map(it => {
+                            {props.pageList.map(it => {
                                 return (
                                     <option key={it.code} value={it.code}>{it.name}</option>
                                 )
                             })}
                         </select>
+                    </div>
+                    <div className="mt-2">
+                        <span className="inline-block w-1/5">原文: </span>
+                        <input className="border-b outline-none inline-block w-4/5" type="text" />
                     </div>
                     <div className="mt-2">
                         <span className="inline-block w-1/5">说明: </span>
@@ -121,6 +95,31 @@ export default function Keys(props) {
     )
 }
 
+function getKeyList(app) {
+    if (!Array.isArray(app.pageList)) {
+        return []
+    }
+
+    function getPageName(code) {
+        return app.pageList.find(it => it.code === code)?.name ?? ''
+    }
+
+    return app.pageList
+        .map(it => it.keyList)
+        .filter(it => Array.isArray(it))
+        .flatMap(it => it)
+        .map(it => {
+            return {
+                key: it.key,
+                url: `/key?appId=${app.id}&key=${it.key}`,
+                pageCode: it.pageCode,
+                pageName: getPageName(it.pageCode),
+                original: it.original,
+                description: it.description ?? ''
+            }
+        })
+}
+
 export const getServerSideProps = withErrorHandling(async function (ctx) {
     const { appId } = ctx.query
 
@@ -134,9 +133,19 @@ export const getServerSideProps = withErrorHandling(async function (ctx) {
     }
 
     const app = await getApp(appId)
+
+    const keyList = getKeyList(app)
+    const pageList = (app.pageList ?? []).map(it => {
+        return {
+            code: it.code,
+            name: it.name,
+        }
+    })
     return {
         props: {
             app,
+            keyList,
+            pageList,
         }
     }
 })

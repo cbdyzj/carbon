@@ -8,7 +8,7 @@ export interface CarbonText {
 export interface CarbonKey {
     key: string
     pageCode: string
-    original: CarbonText[]
+    original: string
     translation?: CarbonText[]
     description?: string
 }

@@ -6,26 +6,13 @@ import { getApp } from '../api/natrium'
 import { withErrorHandling } from '../utils/error'
 import Button from '../components/Button'
 
-function getPageList(app = {}) {
-    if (!Array.isArray(app.pageList)) {
-        return []
-    }
-    return app.pageList.map(it => {
-        return {
-            code: it.code,
-            name: it.name,
-            description: it.description,
-            keyCount: it.keyList?.length ?? 0,
-        }
-    })
-}
-
 export default function Pages(props) {
 
     function handleClickCreatePage(ev) {
     }
 
-    const pageList = getPageList(props.app)
+    const pageCount = props.pageList.length
+    const keyCount = props.pageList.map(it => it.keyCount).reduce((a, c) => a + c, 0)
 
     return (
         <div>
@@ -37,7 +24,7 @@ export default function Pages(props) {
                 <h2 id="页面列表">页面列表</h2>
 
                 <div className="mb-1">
-                    <span>共5个页面，共15个Key</span>
+                    <span>共{pageCount}个页面，共{keyCount}个Key</span>
                     <span className="mx-1">|</span>
                     <Button onClick={handleClickCreatePage}>新建页面</Button>
                 </div>
@@ -52,7 +39,7 @@ export default function Pages(props) {
                     </tr>
                     </thead>
                     <tbody>
-                    {pageList.map(it => {
+                    {props.pageList.map(it => {
                         return (
                             <tr key={it.code}>
                                 <td>{it.name}</td>
@@ -73,6 +60,20 @@ export default function Pages(props) {
     )
 }
 
+function getPageList(app = {}) {
+    if (!Array.isArray(app.pageList)) {
+        return []
+    }
+    return app.pageList.map(it => {
+        return {
+            code: it.code,
+            name: it.name,
+            description: it.description,
+            keyCount: it.keyList?.length ?? 0,
+        }
+    })
+}
+
 export const getServerSideProps = withErrorHandling(async function (ctx) {
     const { appId } = ctx.query
 
@@ -86,9 +87,11 @@ export const getServerSideProps = withErrorHandling(async function (ctx) {
     }
 
     const app = await getApp(appId)
+    const pageList = getPageList(app)
     return {
         props: {
             app,
+            pageList,
         }
     }
 })

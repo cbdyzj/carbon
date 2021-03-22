@@ -10,15 +10,8 @@ import { useState } from 'react'
 
 function OriginalBlock(props) {
 
-    const localeTextList = props.original
-
     const [editing, setEditing] = useState(false)
-
-    const [selectedLocale, setSelectedLocale] = useState(localeTextList[0].locale)
-
-    const selectedLocaleText = localeTextList.find(it => it.locale === selectedLocale)
-
-    const [inputValue, setInputValue] = useState(selectedLocaleText.text)
+    const [inputValue, setInputValue] = useState(props.original)
 
     function handleClickEdit(ev) {
         setEditing(!editing)
@@ -28,26 +21,9 @@ function OriginalBlock(props) {
         setInputValue(ev.target.value)
     }
 
-    function handleSelectChange(ev) {
-        const newSelectedLocale = ev.target.value
-        setSelectedLocale(newSelectedLocale)
-        setInputValue(localeTextList.find(it => it.locale === newSelectedLocale).text)
-        setEditing(false)
-    }
-
     return (
         <>
             <div className="mb-1">
-                <select className="w-20" value={selectedLocale} onChange={handleSelectChange}>
-                    {localeTextList.map(it => {
-                        return (
-                            <option key={it.locale} value={it.locale}>
-                                {it.locale}
-                            </option>
-                        )
-                    })}
-                </select>
-                <span className="mx-1">|</span>
                 <Button onClick={handleClickEdit}>{editing ? '保存' : '编辑'}</Button>
             </div>
 
@@ -88,7 +64,7 @@ function TranslationBlock(props) {
     return (
         <>
             <div className="mb-1">
-                <select className="w-20" value={selectedLocale} onChange={handleSelectChange}>
+                <select value={selectedLocale} onChange={handleSelectChange}>
                     {localeList.map(it => {
                         return (
                             <option key={it} value={it}>
@@ -118,7 +94,6 @@ export default function Key(props) {
     const { carbonKey } = props
     assert(carbonKey, 'carbon key must be not null')
     assert(carbonKey.original, 'key original must be not null')
-    assert(carbonKey.original.length > 0, 'key original locale text must not be empty')
 
     return (
         <div>
@@ -176,12 +151,14 @@ export const getServerSideProps = withErrorHandling(async function (ctx) {
 
     assert(typeof originalKey === 'object', 'key not found')
 
+    const carbonKey = {
+        ...originalKey,
+        pageName: getPageName(originalKey.pageCode),
+    }
+
     return {
         props: {
-            carbonKey: {
-                ...originalKey,
-                pageName: getPageName(originalKey.pageCode),
-            },
+            carbonKey,
             localeList: app.localeList,
         }
     }
