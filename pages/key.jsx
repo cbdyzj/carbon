@@ -18,13 +18,18 @@ function OriginalBlock(props) {
     async function handleClickEditingButton(ev) {
         if (!editing) {
             setEditing(true)
-        } else {
-            setSaving(true)
-            if (inputValue !== props.original) {
-                await props.updateOriginal(inputValue)
-            }
-            setSaving(false)
+        } else if (inputValue === props.original) {
             setEditing(false)
+        } else {
+            try {
+                setSaving(true)
+                await props.updateOriginal(inputValue)
+                setEditing(false)
+            } catch (err) {
+                alert(err.message)
+            } finally {
+                setSaving(false)
+            }
         }
     }
 
@@ -68,6 +73,7 @@ function TranslationBlock(props) {
     const localeTextList = props.translation
 
     const [editing, setEditing] = useState(false)
+    const [saving, setSaving] = useState(false)
 
     const [selectedLocale, setSelectedLocale] = useState(localeList[0])
 
@@ -75,8 +81,30 @@ function TranslationBlock(props) {
 
     const [inputValue, setInputValue] = useState(selectedLocaleText?.text ?? '')
 
-    function handleClickEdit(ev) {
-        setEditing(!editing)
+
+    async function saveLocaleText(newLocaleText) {
+        try {
+            setSaving(true)
+            await props.updateTranslation(newLocaleText)
+            setEditing(false)
+        } catch (err) {
+            alert(err.message)
+        } finally {
+            setSaving(false)
+        }
+    }
+
+    async function handleClickEditingButton(ev) {
+        if (!editing) {
+            setEditing(true)
+        } else if (selectedLocaleText && inputValue === selectedLocaleText.text) {
+            setEditing(false)
+        } else {
+            await saveLocaleText({
+                locale: selectedLocale,
+                text: inputValue,
+            })
+        }
     }
 
     function handleInputChange(ev) {
@@ -88,6 +116,18 @@ function TranslationBlock(props) {
         setSelectedLocale(newSelectedLocale)
         setInputValue(localeTextList.find(it => it.locale === newSelectedLocale)?.text ?? '')
         setEditing(false)
+    }
+
+    function handleClickCancelButton(ev) {
+        setInputValue(selectedLocaleText?.text ?? '')
+        setEditing(false)
+    }
+
+    function getEditingButtonText() {
+        if (saving) {
+            return '保存中...'
+        }
+        return editing ? '保存' : '编辑'
     }
 
     return (
@@ -103,7 +143,13 @@ function TranslationBlock(props) {
                     })}
                 </select>
                 <span className="mx-1">|</span>
-                <Button onClick={handleClickEdit}>{editing ? '保存' : '编辑'}</Button>
+                {(editing && !saving) && (
+                    <>
+                        <Button onClick={handleClickCancelButton}>取消</Button>
+                        <span className="mx-1">|</span>
+                    </>
+                )}
+                <Button onClick={handleClickEditingButton}>{getEditingButtonText()}</Button>
                 {!selectedLocaleText && (
                     <>
                         <span className="mx-1">|</span>
@@ -152,17 +198,36 @@ export default function Key(props) {
     }
 
     async function updateOriginal(newOriginal) {
-        const key = carbonKey.key
         const originalKey = getOriginalKey()
         originalKey.original = newOriginal
         const newApp = { ...app }
         const result = await updateApp(newApp)
         if (result && result.error) {
-            alert(result.error)
-            return
+            throw new Error(result.error)
         }
         setApp(newApp)
-        setCarbonKey(getCarbonKey(newApp, key))
+        setCarbonKey(getCarbonKey(newApp, carbonKey.key))
+    }
+
+    async function updateTranslation(newLocaleText) {
+        const originalKey = getOriginalKey()
+        if (!Array.isArray(originalKey.translation)) {
+            originalKey.translation = [newLocaleText]
+        } else {
+            const theLocaleText = originalKey.translation.find(it => it.locale === newLocaleText.locale)
+            if (!theLocaleText) {
+                originalKey.translation.push(newLocaleText)
+            } else {
+                Object.assign(theLocaleText, newLocaleText)
+            }
+        }
+        const newApp = { ...app }
+        const result = await updateApp(newApp)
+        if (result && result.error) {
+            throw new Error(result.error)
+        }
+        setApp(newApp)
+        setCarbonKey(getCarbonKey(newApp, carbonKey.key))
     }
 
     return (
@@ -179,10 +244,13 @@ export default function Key(props) {
                 </ul>
 
                 <h3 id="原文">原文</h3>
-                <OriginalBlock original={carbonKey.original} updateOriginal={updateOriginal} />
+                <OriginalBlock original={carbonKey.original}
+                               updateOriginal={updateOriginal} />
 
                 <h3 id="译文">译文</h3>
-                <TranslationBlock localeList={app.localeList} translation={carbonKey.translation ?? []} />
+                <TranslationBlock localeList={app.localeList}
+                                  translation={carbonKey.translation ?? []}
+                                  updateTranslation={updateTranslation} />
 
                 {/* locale */}
                 <hr />
